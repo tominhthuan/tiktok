@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+
 class Footer extends Component {
     handleFilterChange = (filter) => {
         const { onFilterChange } = this.props;

@@ -5,7 +5,7 @@ import '../src/App.css'
 import Header from './component/Header';
 import TodoList from './component/TodoList';
 import Footer from './component/Footer';
-
+import Pagination from './component/Pagination';
 class App extends Component {
   constructor(props) {
     super(props);
@@ -20,16 +20,21 @@ class App extends Component {
       editedTodoTitle: '',
       totalTodos: 0,
       filter: 'all',
+      currentPage: 1, // Thêm state currentPage
+      itemsPerPage: 2, //số lượng item hiển thị tại chỉ mục
+
     }
   }
   //header
-  handleClickItem = (index) => {
+  handleClickItem = (id) => {
     const { todos } = this.state;
-    todos[index].isComplete = !todos[index].isComplete;//thay đổi trạng thái flase=> true
+    todos[id].isComplete = !todos[id].isComplete;//thay đổi trạng thái flase=> true
     this.setState({
       todos,
     })
+
   }
+
   handleInputChange = (event) => {
     this.setState({
       news: event.target.value//cập nhật lại trạng news trong state được lấy từ event
@@ -97,24 +102,27 @@ class App extends Component {
       todos,
     });
   }
+  // handleFilterChange = (filter) => {
+  //   const { todos } = this.state;
+  //   let lengthActive = 0;
+  //   let lengthCompleted = 0;
+  //   let total = 0;
+  //   todos.map((item) => {
+  //     if (item.isComplete === false) {
+  //       return lengthActive++;
+  //     } else {
+  //       return lengthCompleted++;
+  //     }
+  //   })
+  //   total = filter === 'all' ? todos.length : filter === 'active' ? lengthActive : lengthCompleted;
+  //   this.setState({
+  //     filter: filter,
+  //     totalTodos: total,
+  //   });
+  // }
   handleFilterChange = (filter) => {
-    const { todos } = this.state;
-    let lengthActive = 0;
-    let lengthCompleted = 0;
-    let total = 0;
-    todos.map((item) => {
-      if (item.isComplete === false) {
-        return lengthActive++;
-      } else {
-        return lengthCompleted++;
-      }
-    })
-    total = filter === 'all' ? todos.length : filter === 'active' ? lengthActive : lengthCompleted;
-    this.setState({
-      filter: filter,
-      totalTodos: total,
-    });
-  }
+    this.setState({ filter });//, currentPage: 1
+  };
   getFilterTodos = () => {
     const { todos, filter } = this.state;
     if (filter === "all") {
@@ -126,6 +134,7 @@ class App extends Component {
     }
     return todos;
   }
+
   handleClearCompleted = () => {
     const { todos, totalTodos } = this.state;
     const updatedTodos = todos.filter(todo => !todo.isComplete);
@@ -136,12 +145,18 @@ class App extends Component {
     });
   }
 
-
-
+  handlePageChange = (pageNumber) => {
+    console.log("pageNumber", pageNumber);
+    this.setState({ currentPage: pageNumber });
+  };
 
   render() {
-    const { news, editedTodoId, totalTodos, filter } = this.state;
+    const { news, editedTodoId, totalTodos, filter, currentPage, itemsPerPage } = this.state;
     const filteredTodos = this.getFilterTodos();
+
+    const indexOfLastItem = currentPage * itemsPerPage;// tính chỉ mục của item cuối cùng trên trang hiện tại
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;// tính chỉ mục của item đầu tiên trên trang hiện tại
+    const currentItems = filteredTodos.slice(indexOfFirstItem, indexOfLastItem);
 
     return (
       <div className='App'>
@@ -152,7 +167,7 @@ class App extends Component {
         />
         <TodoList
           handleClickItem={this.handleClickItem}
-          todos={filteredTodos}
+          todos={currentItems}
           deleteTodo={this.deleteTodo}
           handleEditTodo={this.handleEditTodo}
           editedTodoId={editedTodoId}
@@ -164,6 +179,13 @@ class App extends Component {
           filter={filter}
           onFilterChange={this.handleFilterChange}
           onClearCompleted={this.handleClearCompleted}
+
+        />
+        <Pagination
+          currentPage={currentPage}
+          itemsPerPage={itemsPerPage}
+          totalItems={filteredTodos.length}
+          onPageChange={this.handlePageChange}
         />
       </div >
     );
