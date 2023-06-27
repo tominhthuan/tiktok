@@ -28,6 +28,7 @@ class App extends Component {
   //header
   handleClickItem = (id) => {
     const { todos } = this.state;
+    debugger;
     todos[id].isComplete = !todos[id].isComplete;//thay đổi trạng thái flase=> true
     this.setState({
       todos,
@@ -69,9 +70,9 @@ class App extends Component {
   item from the `todos` array in the component's state using the `splice` method. It then updates
   the state by setting the `todos` array to the updated array and decreasing the `totalTodos` count
   by 1. */
-  deleteTodo = (index) => {
+  deleteTodo = (id) => {
     const { todos } = this.state;
-    todos.splice(index, 1);// slide(from,until) : from:vị trí chỉ mục bất đầu thay thế, until: số phần tử bị loại bỏ
+    todos.splice(id, 1);// slide(from,until) : from:vị trí chỉ mục bất đầu thay thế, until: số phần tử bị loại bỏ
     this.setState({
       todos,
       totalTodos: this.state.totalTodos - 1,
@@ -102,27 +103,27 @@ class App extends Component {
       todos,
     });
   }
-  // handleFilterChange = (filter) => {
-  //   const { todos } = this.state;
-  //   let lengthActive = 0;
-  //   let lengthCompleted = 0;
-  //   let total = 0;
-  //   todos.map((item) => {
-  //     if (item.isComplete === false) {
-  //       return lengthActive++;
-  //     } else {
-  //       return lengthCompleted++;
-  //     }
-  //   })
-  //   total = filter === 'all' ? todos.length : filter === 'active' ? lengthActive : lengthCompleted;
-  //   this.setState({
-  //     filter: filter,
-  //     totalTodos: total,
-  //   });
-  // }
   handleFilterChange = (filter) => {
-    this.setState({ filter });//, currentPage: 1
-  };
+    const { todos } = this.state;
+    let lengthActive = 0;
+    let lengthCompleted = 0;
+    let total = 0;
+    todos.map((item) => {
+      if (item.isComplete === false) {
+        return lengthActive++;
+      } else {
+        return lengthCompleted++;
+      }
+    })
+    total = filter === 'all' ? todos.length : filter === 'active' ? lengthActive : lengthCompleted;
+    this.setState({
+      filter: filter,
+      totalTodos: total,
+    });
+  }
+  // handleFilterChange = (filter) => {
+  //   this.setState({ filter });//, currentPage: 1
+  // };
   getFilterTodos = () => {
     const { todos, filter } = this.state;
     if (filter === "all") {

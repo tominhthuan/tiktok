@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 
 class Pagination extends Component {
     handleClick = (page) => {
-        this.props.onPageChange(page);
+        const { onPageChange } = this.props;
+        onPageChange(page);
     };
 
     render() {

@@ -9,13 +9,14 @@ class Todos extends Component {
         super(props);
     }
     handleClickTodo = () => {
-        const { handleClickItem, index } = this.props;
-        handleClickItem(index);
+        const { handleClickItem, id } = this.props;
+        debugger;
+        handleClickItem(id);
     }
     handleDelete = (event) => {
-        const { deleteTodo, index } = this.props;
+        const { deleteTodo, id } = this.props;
         event.stopPropagation();
-        deleteTodo(index);
+        deleteTodo(id);
 
     }
     handleEditTo = () => {
